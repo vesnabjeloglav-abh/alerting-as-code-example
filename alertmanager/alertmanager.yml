@@ -1,0 +1,33 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: default
+
+  group_by:
+    - alertname
+    - severity
+
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+  routes:
+    - matchers:
+        - severity="critical"
+      receiver: critical-alerts
+
+    - matchers:
+        - severity="warning"
+      receiver: warning-alerts
+
+receivers:
+  - name: default
+
+  - name: critical-alerts
+    slack_configs:
+      - channel: "#alerts-critical"
+
+  - name: warning-alerts
+    slack_configs:
+      - channel: "#alerts-warning"
